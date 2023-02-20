@@ -4,17 +4,32 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Context from '../store/Context';
 import { imageUrl } from '../Constants/constants';
-
+// const jwt = require('jsonwebtoken')
 
 function Home() {
   const {state,dispatch} = useContext(Context)
   const  navigate = useNavigate()
+  const [image,setImage]=useState('')
+    const handleChange=(e)=>{
+        console.log(e.target.files[0]);
+        setImage(e.target.files[0]);
+    }
+    console.log(image);
+    const handleApi =async()=>{
+        const url = 'http://localhost:5000/user/imageUpload';
+        let token =localStorage.getItem('token');
+        const formData=new FormData();
+        formData.append('image',image);
+        let imgResponse =await axios.post(`${url}/${token}`,formData)
+        console.log(imgResponse);
+    }
   const [imagePath,setImagePath] = useState('')
   const [info,setInfo]=useState({
     name:'',
     email:''
   })
-  const getUserDetails =async()=>{
+ 
+    const getUserDetails =async()=>{
     console.log('this is home page',localStorage.getItem('token'));
     if(!localStorage.getItem('token')) navigate('/login')
     console.log('valid');
@@ -58,13 +73,12 @@ function Home() {
                                 <div class="account-settings">
                                     <div class="user-profile">
                                         <div class="user-avatar">
-                                            {/* <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin" /> */}
-                                            <img src={imagePath}/>
+                                            <img  style={{width:'200px'}} src={imagePath}/>
                                         </div>
                                         <div  >
                                             
-                                            <input type="file"  />
-                                            <button className='btn btn-primary'  >Change Photo</button>
+                                            <input type="file" name="image" id=""  onChange={handleChange} />
+                                            <button className='btn btn-primary' onClick={handleApi}    >Change Photo</button>
                                         </div>
                                         <h5 class="user-name"></h5>
                                     </div>

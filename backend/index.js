@@ -1,9 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const app= express();
 const port = 5000;
 const cors = require('cors')
 app.use(express.json());
-
+app.use(bodyParser.json())
 app.use(express.urlencoded());
 app.use(cors());
 
@@ -17,7 +18,9 @@ require('dotenv').config({
 });
 app.use('/user',userRoute)
 
-
+app.get('/',(req,res)=>{
+    res.json('sdfdsgdfhfhgf')
+})
 
 
 

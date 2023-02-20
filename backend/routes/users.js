@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 
 const bodyParser = require('body-parser')
+
 router.use(bodyParser.urlencoded({extended:false}))
 
 const multer  = require('multer');
@@ -11,7 +12,6 @@ const storage = multer.diskStorage({
       cb(null, 'images')
     },
     filename: function (req, file, cb) {
-    //  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
       cb(null, Date.now()+'_'+file.originalname)
     }
   })
@@ -37,5 +37,6 @@ router.get('/',userController.userHome)
 router.get('/list',jwtAuth,userController.userList);
 router.post('/addUser',upload.single('image'),userController.addUser)
 router.post('/login',userController.userLogin)
+router.post('/imageUpload/:id',upload.single('image'),userController.imageUpload)
 
 module.exports=router;

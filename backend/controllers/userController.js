@@ -1,6 +1,6 @@
 const Users = require('../models/users')
 const bcrypt = require('bcrypt');
-const { response } = require('express');
+const jwt =require('jsonwebtoken')
 const userHome =(req,res)=>{
     res.send('hello world');
 }
@@ -10,7 +10,7 @@ const userList = async(req,res)=>{
     let currentUser = res.user
     let data=await Users.find();
     let userData = await Users.findOne({email:currentUser.email})
-    console.log(userData); 
+    //console.log(userData); 
     res.json({data,currentUser,userData})
 }
 
@@ -57,7 +57,8 @@ const userLogin = async(req,res)=>{
     if(!req.body.email||!req.body.password){
         res.status(301).json({message:'error'})
     }
-    console.log(req.body)
+    else{
+        console.log(req.body)
     let user = await Users.findOne({email:req.body.email})
     var resposnseType={
         message:'ok'
@@ -76,11 +77,48 @@ const userLogin = async(req,res)=>{
         resposnseType.message='Invalid email id';
     }
     res.json({message:resposnseType})
+    }
+    // console.log(req.body)
+    // let user = await Users.findOne({email:req.body.email})
+    // var resposnseType={
+    //     message:'ok'
+    // }
+    // if(user){
+    //     let match = await bcrypt.compare(req.body.password,user.password)
+    //     if(match){
+    //         let myToken =await user.getAuthToken();
+    //         resposnseType.message='Login Successful';
+    //         resposnseType.token = myToken;
+    //     }else{
+    //         resposnseType.message='Invalid Password';
+    //     }
+        
+    // }else{
+    //     resposnseType.message='Invalid email id';
+    // }
+    // res.json({message:resposnseType})
+}
+
+const imageUpload =async(req,res)=>{
+    console.log(req.params.id);
+    let user = jwt.decode(req.params.id)
+    console.log(user);
+    console.log(req.file);
+     let currentUser = await Users.findOne({email:user.email})
+     console.log(currentUser); 
+     await Users.updateOne({email:currentUser.email},{
+        $set:{
+            profile:req.file.filename
+        }
+    })
+    // res.json({data,currentUser,userData})
+    res.json({message:'file uploaded'})
 }
 
 module.exports={
     userHome,
     userList,
     addUser,
-    userLogin
+    userLogin,
+    imageUpload
 }

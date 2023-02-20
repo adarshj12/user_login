@@ -9,15 +9,19 @@ function Nav() {
     localStorage.removeItem('token');
     navigate('/login')
   }
+  const value=localStorage.getItem('token')
   console.log(state);
   return (
    <div className='ulNav'>
      <ul>
-        <li><NavLink to='/home' >home</NavLink></li>
-        <li><NavLink to='/login' >login</NavLink></li>
-        <li><NavLink to='/register'>registration</NavLink></li>
-        <li style={{float:'right'}}><button className='btn btn-warning' onClick={logout}>logout</button></li>
-        <li style={{float:'right'}}><NavLink to='/'>Hello {state.name}</NavLink></li>
+        {!value?<li><NavLink to='/login' >login</NavLink></li>:''}
+        {!value?<li><NavLink to='/register'>registration</NavLink></li>:''}
+      { value ?
+      <li style={{float:'right'}}><button className='btn btn-warning' onClick={logout}>logout</button></li>:''}
+       { value ?
+      <li style={{float:'right'}}><NavLink to='/'>Hello {state.name}</NavLink></li>:''}
+        
+        
     </ul>
    </div>
   )
